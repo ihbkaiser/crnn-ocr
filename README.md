@@ -42,6 +42,64 @@ $ cd data
 $ bash download_synth90k.sh
 ```
 
+## synthetic_ocr_news dataset
+
+This repo also supports the `ihbkaiser/synthetic_ocr_news` dataset from Hugging Face.
+
+### Data layout
+
+Expected structure after download:
+
+```
+data/synthetic_ocr_news/
+  images/
+    00000000.png
+    ...
+  labels.json
+  charset.json   # auto-generated during training
+```
+
+`labels.json` is a list of objects with `image_path` and `label` fields. Image paths
+can be absolute or relative; the scripts resolve them under `data/synthetic_ocr_news/`.
+
+### Download
+
+```command
+$ python data/download_synthetic_ocr_news.py --output-dir data/synthetic_ocr_news
+```
+
+### Train
+
+```command
+$ python src/train_synthetic_ocr_news.py \
+    --data-dir data/synthetic_ocr_news \
+    --img-height 48 \
+    --img-width 320
+```
+
+Notes:
+- `img_height` must be divisible by 16 and `img_width` by 4.
+- Samples with labels longer than `img_width // 4 - 1` are filtered out.
+- The charset used for label encoding is saved to `data/synthetic_ocr_news/charset.json`.
+
+### Inference
+
+Predict on arbitrary images:
+
+```command
+$ python src/infer_synthetic_ocr_news.py \
+    --model checkpoints/crnn_synthetic_ocr_news.pt \
+    demo/*.jpg
+```
+
+Run evaluation on the dataset (uses labels for scoring):
+
+```command
+$ python src/infer_synthetic_ocr_news.py \
+    --data-dir data/synthetic_ocr_news \
+    --model checkpoints/crnn_synthetic_ocr_news.pt
+```
+
 ```
 @InProceedings{Jaderberg14c,
   author       = "Max Jaderberg and Karen Simonyan and Andrea Vedaldi and Andrew Zisserman",

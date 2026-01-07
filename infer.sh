@@ -1,0 +1,1 @@
+python src/infer_synthetic_ocr_news.py --model checkpoints/crnn_synthetic_ocr_news_006000_loss66.25629231417774.pt OCR/dataset_split/test/images/00004041.png
